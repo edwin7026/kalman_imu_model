@@ -13,7 +13,8 @@ include_directories($(PROJECT_SOURCE_DIR)/include/)
 # All libraries required goes here
 set(KLIB_SRCS
     include/math/kmath.cpp
-    include/sensor/sensor.cpp
+    #include/sensor/sensor.cpp
+    include/plant.cpp
 )
 
 # Add and libraries
