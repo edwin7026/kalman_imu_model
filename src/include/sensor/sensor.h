@@ -1,17 +1,15 @@
 #include <iostream>
+#include <cmath>
+
+#include <world.h>
 
 /**
  * @class This class models an IMU sensor
  **/
-class sensor
+class sensor : public world
 {
 
 private:
-
-    // Real Postion and orientation
-    float pos[3];
-    float theta[3];
-
     // Analog data
     float acc[3];   // Accelerometer real data
     float gyro[3];  // Gyroscope real data

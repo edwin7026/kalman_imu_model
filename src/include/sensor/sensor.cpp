@@ -5,6 +5,16 @@
 
 #include "sensor.h"
 
+sensor::sensor()
+{
+    // Activate all sensors
+    acc_on = true;
+    gyro_on = true;
+    mag_on = true;
+
+    // Reset all measurements
+    reset();
+}
 
 void sensor::reset()
 {
