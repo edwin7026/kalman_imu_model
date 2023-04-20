@@ -12,8 +12,7 @@ include_directories($(PROJECT_SOURCE_DIR)/include/)
 
 # All libraries required goes here
 set(KLIB_SRCS
-    include/math/kmath.cpp
-    #include/sensor/sensor.cpp
+    include/sensor/sensor.cpp
     include/plant.cpp
 )
 
@@ -22,4 +21,4 @@ add_library(lib ${KLIB_SRCS})
 
 # linking and executable generation
 add_executable(sim main.cpp)
-target_link_libraries(sim lib)
+target_link_libraries(sim lib config++)
