@@ -1,10 +1,15 @@
 /**
- * @file This header file basic kinematic data
+ * @file This header file describes the kinamatics and dynamics of the plant
+ * @author Edwin Joy <edwin7026@gmail.com>
  */
 
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
+#include <libconfig.h++>
+
 #include <iostream>
+#include <cstdlib>
 #include <cmath>
+#include <fstream>
 
 /**
  * This class holds the dynamics and kinematics of the body
@@ -30,23 +35,40 @@ private:
     Eigen::Vector3f omega_dot;           // Angular acceleration
 
     // Helper variables
+    Eigen::Matrix3f J_inv;
     Eigen::Matrix3f omega_skew;
     Eigen::Vector3f Jomega_dot;
+
+    // Plant-sensor interface variables
+    Eigen::Vector3f* real_omega;
+    Eigen::Vector3f* real_acc;
 
     // Time
     float t;                            // Current simulation time
     float dt;                           // Step interval
+    float sim_len;                      // Length of simulation
 
-     // Transformation function
-    void next_sim_step();
+    /**
+     * This function computes the next step
+     * It returns a boolean value with the following meaning:
+     *      true: if simulation time is greater than sim_len
+     *      false: if simulation time is less than sim_len
+    */
+    bool next_sim_step();
 
 public:
     
     // Constructor //
-    plant();
+    plant();                    // use this for debug puposes
+    
+    plant(const std::string&, Eigen::Vector3f*, Eigen::Vector3f*);
 
     // Plant configuration functions //
-    //TODO Get inertial and simualtion parameters from a configuration file
+    
+    /**
+     * This function sets the parameters of the plant from plant_config.cfg
+     */
+    int get_config(const std::string);
 
     // Math functions //
     
@@ -66,9 +88,14 @@ public:
     /**
      * Sets torque to the system and calls the next_sim_step() function
      */
-    void set_torque(Eigen::Vector3f* torq_in);
+    bool set_torque(Eigen::Vector3f* torq_in);
+ 
 
-    
+    /**
+     * Zero out all kinematic parameters
+     */
+    void zero_out();
+
     // Debug functions
     void print_state();
 };
