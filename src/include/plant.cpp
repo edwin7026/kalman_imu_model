@@ -9,7 +9,7 @@ plant::plant()
     pos << 0, 0, 0;
 
     // Zero out orientation
-    theta << M_PI/2, M_PI/2, 0;
+    theta << M_PI/2, 0, 0;
     
     // Zero out angular velocity
     omega << 0, 0, 0;
@@ -76,15 +76,17 @@ int plant::get_config(const std::string file_path)
             std::cout << "Couldn't read mass" << std::endl;
 
         // Get the moment of inertia data
-        // TODO Exception handling
-        const libconfig::Setting& J_vals = inertial_params.lookup("J");
         for (unsigned i = 0; i < 3; i++)
             for (unsigned j = 0; j < 3; j++)
                 J(i, j) = inertial_params.lookup("J")[3*i + j];
         
+        // Get g
+        // Get drift
+        for (unsigned i = 0; i < 3; i++)
+            g(i) = inertial_params.lookup("g")[i];
+        
         // Store its inverse
         J_inv = J.inverse(); 
-
     }
     catch(const libconfig::SettingNotFoundException &nfex)
     {
@@ -125,8 +127,6 @@ bool plant::next_sim_step()
     omega += omega_dot * dt;
     theta += omega * dt;
 
-    // TODO Translational motion
-
     // Wrap back orientation
     if (abs(theta(0)) > 2*M_PI)
         theta(0) = theta(0) - ((int)(theta(0) / (2*M_PI))) * 2*M_PI;
@@ -134,10 +134,16 @@ bool plant::next_sim_step()
         theta(1) = theta(1) - ((int)(theta(1) / (2*M_PI))) * 2*M_PI;
     if (abs(theta(2)) > 2*M_PI)
         theta(2) = theta(2) - ((int)(theta(2) / (2*M_PI))) * 2*M_PI;
-
+    
+    // Translational motion
+    dir_vect = Eigen::Vector3f(cos(theta(0)), cos(theta(1)), cos(theta(2)));
+    acc = force / mass + g;
+    vel += acc * dt;
+    pos += vel * dt;
+    
     // Set the interface variables
     (*real_omega) = omega;
-    (*real_acc) = force / mass;
+    (*real_acc) = acc;
  
     // Increment simulation time
     t = t + dt;
@@ -152,6 +158,7 @@ void plant::zero_out()
 {
     t = 0;
     pos << 0, 0, 0;
+    acc << 0, 0, 0;
     theta << 0, 0, 0;       // TODO
     omega << 0, 0, 0;
     omega_dot << 0, 0, 0;
@@ -160,8 +167,9 @@ void plant::zero_out()
 void plant::print_state()
 {
     std::cout //<< "Mass: " << mass << " kg\n"
-        //<< "Moment of inertia:\n" << J
-        //<< "\nPosition:\n" << pos << " m\n"
+        << "Moment of inertia:\n" << J
+        << "\nAcceleration due to gravity:\n" << g
+        << "\nPosition:\n" << pos << " m\n"
         << "\nOrientation:\n" << theta << " rad\n"
         << "\nTorq:\n" << torq << " N-m\n"
         //<< "\nForce:\n" << force << " N\n"

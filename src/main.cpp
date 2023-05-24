@@ -23,8 +23,8 @@ void run_simulation()
         Eigen::Vector3f tor = Eigen::Vector3f::Random() * 10;
         is_finished = rocket.set_torque(&tor);
         sensor_device.compute_sensor_out();
-        //rocket.print_state();
-        sensor_device.print_state();
+        rocket.print_state();
+        //sensor_device.print_state();
         std::cout << "\n***************************************************************"
              << std::endl;
     }

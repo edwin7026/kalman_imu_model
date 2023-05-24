@@ -49,8 +49,6 @@ int sensor::get_config(const std::string file_path)
         // Set parameters for accelerometer
 
         // Get drift
-        //const libconfig::Setting& acc_drift = acc_params.lookup("drift");
-        //TODO Exception handling
         for (unsigned i = 0; i < 3; i++)
             acc_drift(i) = acc_params.lookup("drift")[i];
         
@@ -62,12 +60,11 @@ int sensor::get_config(const std::string file_path)
         // Set parameters for gyroscope
 
         // Get drift
-        // TODO Exception handling
         for (unsigned i = 0; i < 3; i++)
-            acc_drift(i) = acc_params.lookup("drift")[i];
+            gyro_drift(i) = gyro_params.lookup("drift")[i];
         
         // Get simulation length
-        if (acc_params.lookupValue("noise_power", acc_noise));
+        if (gyro_params.lookupValue("noise_power", gyro_noise));
         else
             std::cout << "Couldn't read sim_len" << std::endl;
 

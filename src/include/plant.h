@@ -18,10 +18,11 @@ class plant
 {
 
 private:
-
     // Inertial characteristics
     float mass;                          // Mass of the system
     Eigen::Matrix3f J;                   // Moment of inertia tensor
+    
+    Eigen::Vector3f g;                   // Acceleration due to gravity
     
     // Spatial features
     Eigen::Vector3f pos;
@@ -30,7 +31,8 @@ private:
     // Dynamic characteristics
     Eigen::Vector3f torq;                // Torque applied to the system
     Eigen::Vector3f force;               // Force on the system
-    
+    Eigen::Vector3f acc;                 // Acceleration of the system
+    Eigen::Vector3f vel;                 // Velocity of the system
     Eigen::Vector3f omega;               // Angular velocity
     Eigen::Vector3f omega_dot;           // Angular acceleration
 
@@ -38,6 +40,7 @@ private:
     Eigen::Matrix3f J_inv;
     Eigen::Matrix3f omega_skew;
     Eigen::Vector3f Jomega_dot;
+    Eigen::Vector3f dir_vect;
 
     // Plant-sensor interface variables
     Eigen::Vector3f* real_omega;
