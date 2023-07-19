@@ -14,4 +14,4 @@ For installing Eigen3:
 
 For installing libconfig:
 
-    $  sudo apt-get install libconfig-dev 
+    $  sudo apt-get install libconfig++-dev 
